@@ -101,16 +101,15 @@ class TextEditor(Frame):
             open(filename, 'w').write(alltext)
             
     def output_text(self):
-        alltext = open('result.txt', 'r').readlines()
-        for line in alltext:
+        alltext = open('result.txt', 'r').readlines()                                       # read the result.txt file
+        for line in alltext:                                                                # display any stdout text on the output text window
                 self.text_out.insert("end", str(line))
                 self.text_out.see("end")
             
     
     def on_run_code(self):
         if self.filename:
-            #os.system('cmd /c "py -i {0}"'.format(self.filename))
-            os.system('cmd /c "py {0} > {1}"'.format(self.filename, 'result.txt'))
+            os.system('cmd /c "py {0} > {1}"'.format(self.filename, 'result.txt'))          # store output on a text file
             self.output_text()
         else:
             messagebox.showerror('Error Run Command','No Open/Saved File', detail='Open or Save a file first')

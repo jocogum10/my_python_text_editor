@@ -1,0 +1,7 @@
+my python text editor project
+base on the mark lutz python programming book 4th ed
+
+the editor can open and save python files
+the editor can also run a python code by simply calling the os.system function to simulate a 'py file.py' cmd
+and pipes its output to a 'result.txt', and then call a function that read the 'result.txt' file and writes the
+text on the output window
