@@ -26,16 +26,18 @@ class TextEditor(Frame):
         self.make_widgets()
         self.text.focus()
         self.filename = ''
+        self.result = ''
         
         
     def make_widgets(self):
-        run_btn = Button(self, text='Run Code', command=(lambda: self.on_run_code()))
+        
+        # text editor window
         vbar = Scrollbar(self)
         hbar = Scrollbar(self, orient='horizontal')
-        text = Text(self, relief=SUNKEN, padx=5, pady=5, wrap='none', tabs='    ')
+        text = Text(self, relief=SUNKEN, padx=5, pady=5, wrap='none')
         self.text = text
         
-        run_btn.grid(row=2, columnspan=2)
+        
         text.grid(row=0, column=0, sticky=NSEW)
         vbar.grid(row=0, column=1, sticky=NSEW)
         hbar.grid(row=1, column=0, sticky=NSEW)
@@ -45,7 +47,29 @@ class TextEditor(Frame):
         text.config(yscrollcommand=vbar.set)
         text.config(xscrollcommand=hbar.set)
         text.config(font=self.font, bg=self.bg, fg=self.fg, insertbackground=self.insert_bg)
+        
+        # button widget to run code
+        run_btn = Button(self, text='Run Code', command=(lambda: self.on_run_code()))
         run_btn.config(font=('consolas', 10, 'bold'), bg='#808080', fg=self.fg, width=20)
+        run_btn.grid(row=2, columnspan=2)
+        
+        # output window for running code
+        vbar_out = Scrollbar(self)
+        hbar_out = Scrollbar(self, orient='horizontal')
+        text_out = Text(self, relief=SUNKEN, padx=5, pady=5, wrap='none')
+        self.text_out = text_out
+        
+        text_out.grid(row=4, column=0, sticky=NSEW)
+        vbar_out.grid(row=4, column=1, sticky=NSEW)
+        hbar_out.grid(row=5, column=0, sticky=NSEW)
+        
+        vbar_out.config(command=text_out.yview)
+        hbar_out.config(command=text_out.xview)
+        text_out.config(yscrollcommand=vbar_out.set)
+        text_out.config(xscrollcommand=hbar_out.set)
+        text_out.config(font=self.font, bg=self.bg, fg=self.fg, insertbackground=self.insert_bg)
+        text_out.config(height=10)
+        self.text_out = text_out
         
         
     def make_menu(self):
@@ -54,7 +78,6 @@ class TextEditor(Frame):
         file = Menu(top)
         file.add_command(label='Open File', command=lambda: self.on_open())
         file.add_command(label='Save File', command=lambda: self.on_save())
-        file.add_command(label='Run Code', command=lambda: _thread.start_new_thread(lambda: (self.on_run_code()), ()))
         file.add_command(label='Quit', command=lambda: self.on_quit())
         top.add_cascade(label='Menu', menu=file, underline=0)
         
@@ -77,10 +100,18 @@ class TextEditor(Frame):
             alltext = self.text.get('1.0', END+'-1c')
             open(filename, 'w').write(alltext)
             
+    def output_text(self):
+        alltext = open('result.txt', 'r').readlines()
+        for line in alltext:
+                self.text_out.insert("end", str(line))
+                self.text_out.see("end")
+            
     
     def on_run_code(self):
         if self.filename:
-            os.system('cmd /c "py -i {0}"'.format(self.filename))
+            #os.system('cmd /c "py -i {0}"'.format(self.filename))
+            os.system('cmd /c "py {0} > {1}"'.format(self.filename, 'result.txt'))
+            self.output_text()
         else:
             messagebox.showerror('Error Run Command','No Open/Saved File', detail='Open or Save a file first')
     
