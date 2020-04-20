@@ -89,7 +89,7 @@ class TextEditor(Frame):
 if __name__ == '__main__':
     root = Tk()
     root.title("JocoGum's Python Text Editor")
-    root.iconbitmap('guitar.ico')
+    #root.iconbitmap('guitar.ico')
     root.rowconfigure(0, weight=1)
     root.columnconfigure(0, weight=1)
     editor = TextEditor(root)
